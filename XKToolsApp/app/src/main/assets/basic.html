@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>XK TOOLS • Basic Features</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card {
+            background: rgba(8,12,20,0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,255,255,0.3);
+        }
+        .feature-card {
+            background: rgba(8,12,20,0.65);
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .feature-info h3 { color: #EFF3F8; font-size: 1rem; margin-bottom: 4px; }
+        .feature-info p { color: #8CA3C7; font-size: 0.7rem; }
+        .toggle-switch {
+            width: 52px;
+            height: 28px;
+            background: #2D3A5E;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .toggle-switch.active {
+            background: #3B82F6;
+            box-shadow: 0 0 8px #3B82F6;
+        }
+        .toggle-switch::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        .toggle-switch.active::after { left: 25px; }
+        .toast-message {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1E3A8A;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 12px;
+            z-index: 9999;
+        }
+        .nav-bar {
+            display: flex;
+            background: rgba(16,20,30,0.7);
+            border-radius: 60px;
+            padding: 6px;
+            margin-top: 30px;
+            gap: 6px;
+        }
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #9CA3AF;
+        }
+        .nav-item.active {
+            background: linear-gradient(95deg, #2563EB, #3B82F6);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h2 style="color:#0FF;">Basic Features</h2>
+        <div id="featuresList"></div>
+    </div>
+    <div class="nav-bar">
+        <div class="nav-item" data-page="game">Game</div>
+        <div class="nav-item active" data-page="fitur">Fitur</div>
+        <div class="nav-item" data-page="visual">Visual</div>
+        <div class="nav-item" data-page="info">Info Akun</div>
+    </div>
+</div>
+<script>
+    // Fallback untuk testing di browser
+    if (typeof XKShell === 'undefined') {
+        window.XKShell = {
+            execShellAsync: function(cmd, callbackId) {
+                console.log("[SIMULASI] Perintah: " + cmd);
+                setTimeout(() => {
+                    if (window._shizukuCallback) window._shizukuCallback(callbackId, "Simulasi sukses (tidak benar-benar dijalankan)");
+                }, 500);
+            },
+            showToast: function(msg) { alert(msg); }
+        };
+    }
+
+    const features = [
+        { name: 'Smart DPI', cmdEnable: 'setprop persist.sys.display_density 320', cmdDisable: 'setprop persist.sys.display_density 240', key: 'basic_smart_dpi' },
+        { name: 'Easy Drag 3%', cmdEnable: 'setprop touch.drag.threshold 3', cmdDisable: 'setprop touch.drag.threshold 0', key: 'basic_easy_drag' },
+        { name: 'Aim Stability 6%', cmdEnable: 'setprop aim.stability.factor 6', cmdDisable: 'setprop aim.stability.factor 0', key: 'basic_aim_stability' },
+        { name: 'Touch Responsive', cmdEnable: 'setprop touch.responsive.level high', cmdDisable: 'setprop touch.responsive.level normal', key: 'basic_touch_responsive' },
+        { name: 'Sensitivity Improve', cmdEnable: 'setprop input.sensitivity.boost 1', cmdDisable: 'setprop input.sensitivity.boost 0', key: 'basic_sensitivity' },
+        { name: 'Smooth Drag 3%', cmdEnable: 'setprop drag.smooth.factor 3', cmdDisable: 'setprop drag.smooth.factor 0', key: 'basic_smooth_drag' }
+    ];
+
+    function showToast(msg) {
+        if (XKShell && XKShell.showToast) XKShell.showToast(msg);
+        else alert(msg);
+    }
+
+    function execShell(command, onSuccess, onError) {
+        if (XKShell && XKShell.execShellAsync) {
+            const callbackId = 'cb_' + Date.now() + '_' + Math.random();
+            window._shizukuCallback = function(id, result) {
+                if (id === callbackId) {
+                    if (result.startsWith('Error:')) onError?.(result);
+                    else onSuccess?.(result);
+                    delete window._shizukuCallback;
+                }
+            };
+            XKShell.execShellAsync(command, callbackId);
+        } else {
+            onError?.("Native interface tidak tersedia");
+        }
+    }
+
+    function renderFeatures() {
+        const container = document.getElementById('featuresList');
+        container.innerHTML = '';
+        features.forEach(feat => {
+            const isActive = localStorage.getItem(feat.key) === 'true';
+            const card = document.createElement('div');
+            card.className = 'feature-card';
+            card.innerHTML = `
+                <div class="feature-info">
+                    <h3>${feat.name}</h3>
+                    <p>Klik toggle untuk mengaktifkan</p>
+                </div>
+                <div class="toggle-switch ${isActive ? 'active' : ''}" data-key="${feat.key}" data-cmd-enable="${feat.cmdEnable}" data-cmd-disable="${feat.cmdDisable}" data-name="${feat.name}"></div>
+            `;
+            container.appendChild(card);
+        });
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const key = toggle.getAttribute('data-key');
+                const cmdEnable = toggle.getAttribute('data-cmd-enable');
+                const cmdDisable = toggle.getAttribute('data-cmd-disable');
+                const name = toggle.getAttribute('data-name');
+                const currentlyActive = toggle.classList.contains('active');
+                const willBeActive = !currentlyActive;
+                toggle.style.opacity = '0.5';
+                const command = willBeActive ? cmdEnable : cmdDisable;
+                execShell(command,
+                    () => {
+                        toggle.style.opacity = '1';
+                        if (willBeActive) {
+                            toggle.classList.add('active');
+                            localStorage.setItem(key, 'true');
+                            showToast(`✅ ${name} diaktifkan`);
+                        } else {
+                            toggle.classList.remove('active');
+                            localStorage.setItem(key, 'false');
+                            showToast(`⭕ ${name} dinonaktifkan`);
+                        }
+                    },
+                    (error) => {
+                        toggle.style.opacity = '1';
+                        showToast(`❌ Gagal: ${error}`);
+                    }
+                );
+            });
+        });
+    }
+    renderFeatures();
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+            if (page === 'game') window.location.href = 'dashboard.html';
+            else if (page === 'visual') window.location.href = 'visual.html';
+            else if (page === 'info') window.location.href = 'info.html';
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>XK TOOLS • Pilih Tier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .grid-tier {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .tier-card {
+            background: rgba(8,12,20,0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(0,255,255,0.3);
+            cursor: pointer;
+        }
+        .tier-name { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+        .nav-bar {
+            display: flex;
+            background: rgba(16,20,30,0.7);
+            border-radius: 60px;
+            padding: 6px;
+            margin-top: 30px;
+            gap: 6px;
+        }
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #9CA3AF;
+        }
+        .nav-item.active {
+            background: linear-gradient(95deg, #2563EB, #3B82F6);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="grid-tier" id="tierGrid"></div>
+    <div class="nav-bar">
+        <div class="nav-item" data-page="game">Game</div>
+        <div class="nav-item active" data-page="fitur">Fitur</div>
+        <div class="nav-item" data-page="visual">Visual</div>
+        <div class="nav-item" data-page="info">Info Akun</div>
+    </div>
+</div>
+<script>
+    const tiers = ['Basic','Ultra','Vixo','Delta','Sonic','Lunar','Athena','Privet'];
+    const colors = ['#3B82F6','#F97316','#A855F7','#4F46E5','#F43F5E','#FACC15','#FFD700','#10B981'];
+    const container = document.getElementById('tierGrid');
+    tiers.forEach((tier, idx) => {
+        const card = document.createElement('div');
+        card.className = 'tier-card';
+        card.style.borderTop = `3px solid ${colors[idx]}`;
+        card.innerHTML = `<div class="tier-name" style="color:${colors[idx]}">${tier}</div><div>Klik untuk akses</div>`;
+        card.addEventListener('click', () => {
+            window.location.href = `${tier.toLowerCase()}.html`;
+        });
+        container.appendChild(card);
+    });
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+            if (page === 'game') window.location.href = 'dashboard.html';
+            else if (page === 'visual') window.location.href = 'visual.html';
+            else if (page === 'info') window.location.href = 'info.html';
+        });
+    });
+</script>
+</body>
+</html>

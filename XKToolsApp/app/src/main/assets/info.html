@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>XK TOOLS • Info Akun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card {
+            background: rgba(8,12,20,0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,255,255,0.3);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .info-label { color: #8CA3C7; font-weight: 500; }
+        .info-value { color: #EFF3F8; font-weight: 700; }
+        .nav-bar {
+            display: flex;
+            background: rgba(16,20,30,0.7);
+            border-radius: 60px;
+            padding: 6px;
+            margin-top: 30px;
+            gap: 6px;
+        }
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #9CA3AF;
+        }
+        .nav-item.active {
+            background: linear-gradient(95deg, #2563EB, #3B82F6);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h2 style="color:#0FF;">Info Akun</h2>
+        <div id="accountInfo"></div>
+    </div>
+    <div class="nav-bar">
+        <div class="nav-item" data-page="game">Game</div>
+        <div class="nav-item" data-page="fitur">Fitur</div>
+        <div class="nav-item" data-page="visual">Visual</div>
+        <div class="nav-item active" data-page="info">Info Akun</div>
+    </div>
+</div>
+<script>
+    if (localStorage.getItem('apk_logged_in') !== 'true') {
+        // redirect ke login jika belum login (tapi dalam WebView biasanya sudah login terpisah)
+        // Untuk kemudahan, kita tampilkan pesan
+        document.getElementById('accountInfo').innerHTML = '<p style="color:red">Belum login. Silakan login terlebih dahulu.</p>';
+    } else {
+        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+        const username = localStorage.getItem('apk_username') || 'Guest';
+        fetch(`${DB_URL}apk_access/${username}.json`)
+            .then(res => res.json())
+            .then(data => {
+                if (data) {
+                    const tier = data.tier || 'Basic';
+                    const expired = data.expired || 'Tidak diketahui';
+                    document.getElementById('accountInfo').innerHTML = `
+                        <div class="info-row"><span class="info-label">Username</span><span class="info-value">${username}</span></div>
+                        <div class="info-row"><span class="info-label">Tier</span><span class="info-value">${tier}</span></div>
+                        <div class="info-row"><span class="info-label">Expired</span><span class="info-value">${expired}</span></div>
+                    `;
+                } else {
+                    document.getElementById('accountInfo').innerHTML = '<p>Data tidak ditemukan</p>';
+                }
+            })
+            .catch(err => {
+                document.getElementById('accountInfo').innerHTML = '<p>Gagal memuat data</p>';
+            });
+    }
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+            if (page === 'game') window.location.href = 'dashboard.html';
+            else if (page === 'fitur') window.location.href = 'fitur.html';
+            else if (page === 'visual') window.location.href = 'visual.html';
+        });
+    });
+</script>
+</body>
+</html>

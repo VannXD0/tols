@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>XK TEAM • Crosshair</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Inter', sans-serif;
+            padding: 20px 16px 40px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .back-btn {
+            background: rgba(30, 42, 58, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #3B82F6;
+            border: 1px solid rgba(59,130,246,0.4);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #E0F2FE, #3B82F6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .card {
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+        }
+        .card-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #0FF;
+            text-shadow: 0 0 4px #0FF;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 8px;
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .setting-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #F0F4FF;
+            min-width: 100px;
+        }
+        input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border-radius: 12px;
+            border: 2px solid #3B82F6;
+            background: #1E2A3A;
+            cursor: pointer;
+        }
+        .shape-buttons {
+            display: flex;
+            gap: 8px;
+            background: #1A1F2E;
+            padding: 5px;
+            border-radius: 60px;
+        }
+        .shape-btn {
+            background: transparent;
+            border: none;
+            padding: 5px 14px;
+            border-radius: 40px;
+            color: #9CA3AF;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .shape-btn.active {
+            background: #3B82F6;
+            color: white;
+            box-shadow: 0 0 8px #3B82F6;
+        }
+        .slider-container {
+            flex: 1;
+            min-width: 160px;
+        }
+        input[type="range"] {
+            width: 100%;
+            background: #2D3E5A;
+            height: 4px;
+            border-radius: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #3B82F6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .size-value {
+            font-size: 0.8rem;
+            color: #8CA3C7;
+            margin-left: 12px;
+            min-width: 55px;
+        }
+        .preview-area {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        canvas {
+            background: transparent;
+            width: 100%;
+            max-width: 280px;
+            aspect-ratio: 1/1;
+            border: none;
+        }
+        .toggle-switch {
+            width: 52px;
+            height: 28px;
+            background: #2D3A5E;
+            border-radius: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .toggle-switch.active {
+            background: #3B82F6;
+            box-shadow: 0 0 8px #3B82F6;
+        }
+        .toggle-switch::after {
+            content: "";
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        .toggle-switch.active::after {
+            left: 25px;
+        }
+        .warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid #F59E0B;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 0.7rem;
+            color: #FCD34D;
+            margin-top: 12px;
+        }
+        .nav-bar {
+            display: flex;
+            background: rgba(16, 20, 30, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 60px;
+            padding: 6px;
+            margin-top: 30px;
+            gap: 6px;
+            position: sticky;
+            bottom: 10px;
+        }
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #9CA3AF;
+            background: transparent;
+            border: none;
+        }
+        .nav-item.active {
+            background: linear-gradient(95deg, #2563EB, #3B82F6);
+            color: white;
+            box-shadow: 0 0 12px #3B82F6;
+        }
+        hr {
+            border-color: #2C3E5A;
+            margin: 12px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Back</button>
+        <div class="title">🎯 Crosshair</div>
+        <div style="width: 60px;"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><i class="fas fa-crosshairs"></i> Custom Crosshair</div>
+        <div class="preview-area">
+            <canvas id="previewCanvas" width="280" height="280"></canvas>
+        </div>
+        <div class="setting-row">
+            <div class="setting-label">🎨 Warna</div>
+            <input type="color" id="crosshairColor" value="#00FFCC">
+        </div>
+        <div class="setting-row">
+            <div class="setting-label">🔷 Bentuk</div>
+            <div class="shape-buttons">
+                <button class="shape-btn" data-shape="cross">✛ Cross</button>
+                <button class="shape-btn" data-shape="dot">● Dot</button>
+                <button class="shape-btn" data-shape="circle">◯ Circle</button>
+                <button class="shape-btn" data-shape="square">■ Square</button>
+            </div>
+        </div>
+        <div class="setting-row">
+            <div class="setting-label">📏 Ukuran (px)</div>
+            <div class="slider-container">
+                <input type="range" id="crosshairSize" min="10" max="200" value="48" step="2">
+            </div>
+            <div class="size-value" id="sizeValue">48px</div>
+        </div>
+        <hr>
+        <div class="setting-row">
+            <div class="setting-label">🔘 Overlay Crosshair</div>
+            <div class="toggle-switch" id="overlayToggle"></div>
+        </div>
+        <div class="warning" id="overlayWarning" style="display: none;">⚠️ Izin timpa aplikasi diperlukan (simulasi).</div>
+    </div>
+
+    <div class="nav-bar">
+        <button class="nav-item" data-page="game">Game</button>
+        <button class="nav-item" data-page="fitur">Fitur</button>
+        <button class="nav-item active" data-page="visual">Visual</button>
+        <button class="nav-item" data-page="info">Info Akun</button>
+    </div>
+</div>
+
+<div id="floatingCrosshair" style="position: fixed; pointer-events: none; z-index: 9999; display: none; transform: translate(-50%, -50%); left: 50%; top: 50%;">
+    <canvas id="floatingCanvas" width="200" height="200"></canvas>
+</div>
+
+<script>
+    if (localStorage.getItem('apk_logged_in') !== 'true') {
+        window.location.href = 'index.html';
+    }
+
+    const previewCanvas = document.getElementById('previewCanvas');
+    const previewCtx = previewCanvas.getContext('2d');
+    const colorPicker = document.getElementById('crosshairColor');
+    const sizeSlider = document.getElementById('crosshairSize');
+    const sizeValue = document.getElementById('sizeValue');
+    const shapeBtns = document.querySelectorAll('.shape-btn');
+    const overlayToggle = document.getElementById('overlayToggle');
+    const floatingDiv = document.getElementById('floatingCrosshair');
+    const floatingCanvas = document.getElementById('floatingCanvas');
+    let floatingCtx = floatingCanvas.getContext('2d');
+
+    let crosshairColor = localStorage.getItem('cross_color') || '#00FFCC';
+    let crosshairSize = parseInt(localStorage.getItem('cross_size')) || 48;
+    let crosshairShape = localStorage.getItem('cross_shape') || 'cross';
+    let overlayActive = localStorage.getItem('overlay_crosshair') === 'true';
+
+    colorPicker.value = crosshairColor;
+    sizeSlider.value = crosshairSize;
+    sizeValue.innerText = crosshairSize + 'px';
+    shapeBtns.forEach(btn => {
+        if (btn.getAttribute('data-shape') === crosshairShape) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
+    if (overlayActive) {
+        overlayToggle.classList.add('active');
+        floatingDiv.style.display = 'block';
+        document.getElementById('overlayWarning').style.display = 'block';
+    }
+
+    function drawCrosshair(ctx, w, h, color, size, shape) {
+        ctx.clearRect(0, 0, w, h);
+        const cx = w / 2;
+        const cy = h / 2;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = Math.max(2, Math.floor(size / 12));
+        ctx.lineCap = 'round';
+        const s = size;
+        const half = s / 2;
+
+        switch (shape) {
+            case 'cross':
+                ctx.beginPath();
+                ctx.moveTo(cx - half, cy); ctx.lineTo(cx - half/2, cy);
+                ctx.moveTo(cx + half/2, cy); ctx.lineTo(cx + half, cy);
+                ctx.moveTo(cx, cy - half); ctx.lineTo(cx, cy - half/2);
+                ctx.moveTo(cx, cy + half/2); ctx.lineTo(cx, cy + half);
+                ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx, cy, s/12, 0, 2*Math.PI); ctx.fill();
+                break;
+            case 'dot':
+                ctx.beginPath(); ctx.arc(cx, cy, s / 2.5, 0, 2*Math.PI); ctx.fill();
+                break;
+            case 'circle':
+                ctx.beginPath(); ctx.arc(cx, cy, s / 2.2, 0, 2*Math.PI); ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx, cy, s / 12, 0, 2*Math.PI); ctx.fill();
+                break;
+            case 'square':
+                const left = cx - half;
+                const top = cy - half;
+                ctx.strokeRect(left, top, s, s);
+                ctx.beginPath(); ctx.arc(cx, cy, s / 12, 0, 2*Math.PI); ctx.fill();
+                break;
+        }
+        ctx.restore();
+    }
+
+    function updateAll() {
+        drawCrosshair(previewCtx, previewCanvas.width, previewCanvas.height, crosshairColor, crosshairSize, crosshairShape);
+        if (overlayActive) {
+            floatingCanvas.width = crosshairSize * 2;
+            floatingCanvas.height = crosshairSize * 2;
+            floatingCtx = floatingCanvas.getContext('2d');
+            drawCrosshair(floatingCtx, floatingCanvas.width, floatingCanvas.height, crosshairColor, crosshairSize, crosshairShape);
+        }
+    }
+
+    colorPicker.addEventListener('input', (e) => {
+        crosshairColor = e.target.value;
+        localStorage.setItem('cross_color', crosshairColor);
+        updateAll();
+    });
+    sizeSlider.addEventListener('input', (e) => {
+        crosshairSize = parseInt(e.target.value);
+        sizeValue.innerText = crosshairSize + 'px';
+        localStorage.setItem('cross_size', crosshairSize);
+        updateAll();
+    });
+    shapeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const shape = btn.getAttribute('data-shape');
+            crosshairShape = shape;
+            localStorage.setItem('cross_shape', shape);
+            shapeBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateAll();
+        });
+    });
+    overlayToggle.addEventListener('click', () => {
+        overlayActive = !overlayActive;
+        localStorage.setItem('overlay_crosshair', overlayActive);
+        if (overlayActive) {
+            overlayToggle.classList.add('active');
+            floatingDiv.style.display = 'block';
+            document.getElementById('overlayWarning').style.display = 'block';
+            updateAll();
+        } else {
+            overlayToggle.classList.remove('active');
+            floatingDiv.style.display = 'none';
+            document.getElementById('overlayWarning').style.display = 'none';
+        }
+    });
+
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.getAttribute('data-page');
+            if (page === 'game') window.location.href = 'dashboard.html';
+            else if (page === 'fitur') window.location.href = 'fitur.html';
+            else if (page === 'info') window.location.href = 'info.html';
+        });
+    });
+    document.getElementById('backBtn').addEventListener('click', () => {
+        window.location.href = 'dashboard.html';
+    });
+
+    updateAll();
+</script>
+</body>
+</html>

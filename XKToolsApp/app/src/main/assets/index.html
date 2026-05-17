@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>XK TEAM • Login APK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(12, 20, 35, 0.65);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            padding: 2rem 1.8rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 25px 45px -10px rgba(0, 0, 0, 0.4);
+            transition: 0.25s;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 0.6rem;
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 16px -4px #0F2B6D;
+        }
+        .logo-icon span {
+            font-weight: 800;
+            font-size: 2rem;
+            color: white;
+            letter-spacing: 1px;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #E0F2FE, #93C5FD);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .logo p {
+            color: #8BA3C7;
+            font-size: 0.7rem;
+            margin-top: 0.2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5B7BB3;
+            font-size: 0.9rem;
+        }
+        .input-group input {
+            width: 100%;
+            background: #0B1322;
+            border: 1.5px solid #253A5E;
+            padding: 0.75rem 1rem 0.75rem 2.6rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #F0F4FF;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+            background: #0A1120;
+        }
+        .input-group input::placeholder {
+            color: #4F6D8F;
+            font-size: 0.75rem;
+        }
+
+        .remember-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0 1.5rem;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #B0C4DE;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+        .checkbox-label input {
+            width: 16px;
+            height: 16px;
+            accent-color: #3B82F6;
+        }
+
+        .login-btn {
+            background: linear-gradient(100deg, #1E3A8A, #3B82F6);
+            width: 100%;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px -4px #1E3A8A;
+        }
+        .login-btn:hover {
+            transform: scale(0.98);
+            background: linear-gradient(100deg, #142F6F, #2563EB);
+        }
+
+        .error-msg {
+            background: rgba(220, 38, 38, 0.12);
+            border-left: 4px solid #EF4444;
+            padding: 0.5rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            margin-bottom: 1rem;
+            color: #FECACA;
+            display: none;
+            text-align: center;
+        }
+        .error-msg.show {
+            display: block;
+        }
+        .help-link {
+            text-align: center;
+            margin-top: 1.2rem;
+        }
+        .help-link a {
+            color: #7A9BCB;
+            text-decoration: none;
+            font-size: 0.65rem;
+        }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="logo">
+        <div class="logo-icon"><span>XK</span></div>
+        <h1>XK TEAM</h1>
+        <p>Masukkan akun APK Anda</p>
+    </div>
+    <div id="errorMsg" class="error-msg">⚠️ Username atau password salah</div>
+    <form id="loginForm">
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="username" placeholder="Username" autocomplete="off" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <div class="remember-row">
+            <label class="checkbox-label">
+                <input type="checkbox" id="rememberCheck"> <span>Ingat saya</span>
+            </label>
+        </div>
+        <button type="submit" class="login-btn"><i class="fas fa-arrow-right-to-bracket"></i> MASUK</button>
+    </form>
+    <div class="help-link">
+        <a href="#" id="helpBtn">Butuh bantuan? Hubungi admin</a>
+    </div>
+</div>
+
+<script>
+    // Menggunakan database module (sama dengan admin panel)
+    const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+    // Node untuk APK users
+    const APK_NODE = "apk_access";
+
+    const form = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const rememberCheck = document.getElementById('rememberCheck');
+    const errorDiv = document.getElementById('errorMsg');
+
+    function showError(msg) {
+        errorDiv.innerText = msg;
+        errorDiv.classList.add('show');
+        setTimeout(() => errorDiv.classList.remove('show'), 4000);
+    }
+
+    function loadRemembered() {
+        const savedUser = localStorage.getItem('apk_savedUsername');
+        const savedPass = localStorage.getItem('apk_savedPassword');
+        const isChecked = localStorage.getItem('apk_rememberChecked') === 'true';
+        if (isChecked && savedUser) {
+            usernameInput.value = savedUser;
+            passwordInput.value = savedPass || '';
+            rememberCheck.checked = true;
+        }
+    }
+
+    function saveCredentials(username, password, isChecked) {
+        if (isChecked) {
+            localStorage.setItem('apk_savedUsername', username);
+            localStorage.setItem('apk_savedPassword', password);
+            localStorage.setItem('apk_rememberChecked', 'true');
+        } else {
+            localStorage.removeItem('apk_savedUsername');
+            localStorage.removeItem('apk_savedPassword');
+            localStorage.setItem('apk_rememberChecked', 'false');
+        }
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!username || !password) {
+            showError('❌ Isi semua kolom!');
+            return;
+        }
+
+        const btn = form.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Memeriksa...';
+        btn.disabled = true;
+
+        try {
+            // Ambil data dari node apk_access/{username}
+            const response = await fetch(`${DB_URL}${APK_NODE}/${username}.json`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const userData = await response.json();
+
+            if (!userData) {
+                showError('❌ Username tidak ditemukan');
+                return;
+            }
+            // Cek password
+            if (userData.password !== password) {
+                showError('❌ Password salah');
+                return;
+            }
+            // Cek expired
+            const today = new Date().toISOString().slice(0,10);
+            if (userData.expired && userData.expired < today) {
+                showError('⚠️ Akun sudah kadaluarsa');
+                return;
+            }
+
+            // Login sukses
+            saveCredentials(username, password, rememberCheck.checked);
+            localStorage.setItem('apk_logged_in', 'true');
+            localStorage.setItem('apk_username', username);
+            localStorage.setItem('apk_key', userData.key);
+            // Redirect ke dashboard APK
+            window.location.href = 'dashboard.html';
+        } catch (err) {
+            console.error(err);
+            showError('⚠️ Gagal koneksi ke database: ' + err.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('helpBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Hubungi admin XK TEAM untuk mendapatkan akun.');
+    });
+
+    loadRemembered();
+</script>
+</body>
+</html>
